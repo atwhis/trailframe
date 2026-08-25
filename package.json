@@ -1,0 +1,26 @@
+{
+  "name": "trailframe",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c yellow,cyan \"npm run dev -w @trailframe/api\" \"npm run dev -w @trailframe/web\"",
+    "build": "npm run build -w @trailframe/track-core && npm run build -w @trailframe/api && npm run build -w @trailframe/web",
+    "test": "npm run test -w @trailframe/track-core && npm run test -w @trailframe/api && npm run test -w @trailframe/web",
+    "typecheck": "npm run typecheck -w @trailframe/track-core && npm run typecheck -w @trailframe/api && npm run typecheck -w @trailframe/web",
+    "check": "npm run typecheck && npm test && npm run build"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "concurrently": "^9.2.1",
+    "typescript": "^5.9.2",
+    "vitest": "^2.1.9"
+  }
+}
