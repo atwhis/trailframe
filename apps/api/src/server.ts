@@ -1,5 +1,10 @@
-import "dotenv/config";
+import { config } from "dotenv";
+import { fileURLToPath } from "node:url";
 import { buildApp } from "./app.js";
+
+// npm workspaces run this package with apps/api as process.cwd(). Resolve from
+// the module instead so both src/server.ts and dist/server.js load root .env.
+config({ path: fileURLToPath(new URL("../../../.env", import.meta.url)), quiet: true });
 
 const app = await buildApp({
   mapboxToken: process.env.MAPBOX_ACCESS_TOKEN,

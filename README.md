@@ -51,6 +51,8 @@ MAPBOX_STYLE=mapbox/outdoors-v12
 
 不要把真实 token 放入 Git、前端 `VITE_` 变量或浏览器代码。网页只请求 Trailframe API；API 在服务端请求 Mapbox Static Images。生成图片保留 `© Mapbox © OpenStreetMap` 署名。Mapbox 的套餐、额度和许可可能变化，正式上线前请重新核对其当前条款。
 
+`.env` 必须位于仓库根目录（与根 `package.json` 同级）。API 会显式读取此文件；修改 token 后需要重启 `npm run dev`。
+
 `OVERPASS_URL` 默认使用公共 Overpass 实例。公共服务可能限流，生产环境建议增加缓存或使用自建实例。高峰数据署名为 OpenStreetMap contributors。
 
 ## 支持的轨迹数据
