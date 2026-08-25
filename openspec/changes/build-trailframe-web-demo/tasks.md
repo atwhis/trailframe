@@ -36,4 +36,4 @@
 ## 6. GitHub delivery
 
 - [x] 6.1 Initialize Git with a main branch, review tracked files for secrets and generated artifacts, and create the implementation commit
-- [ ] 6.2 Inspect the target GitHub remote, integrate non-destructively if needed, push main, and verify the published commit
+- [x] 6.2 Inspect the target GitHub remote, integrate non-destructively if needed, push main, and verify the published commit
