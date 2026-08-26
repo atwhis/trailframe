@@ -1,6 +1,6 @@
 # Trailframe
 
-Trailframe（轨迹成画）是一个纯 Web demo：导入 GPX/KML 后，可生成带地貌、周边高峰、海拔曲线与统计信息的地形轨迹海报，或把轨迹形状和自选统计放到一张本地照片上。
+Trailframe（轨迹成画）是一个纯 Web demo：导入 GPX/KML 后，可生成带影像地貌、地图原生标签、分日轨迹、海拔曲线与统计信息的地形轨迹海报，或把轨迹形状和自选统计放到一张本地照片上。
 
 > 当前范围是静态图片。HEIC、GIF、视频、Apple Live Photo 和动态海报暂不支持。
 
@@ -9,17 +9,22 @@ Trailframe（轨迹成画）是一个纯 Web demo：导入 GPX/KML 后，可生�
 ### 地形轨迹海报
 
 - GPX/KML 导入并显示总距离、累计爬升、总耗时、最高海拔。
-- 约 1600 × 2400 PNG，包含地形底图、按本地日期着色的轨迹、海拔曲线、累计下降与最高海拔。
-- 默认搜索轨迹周边 5 km 内带名称和海拔的 OSM `natural=peak`，最多展示 5 座。
-- Mapbox token 只由 API 读取。无 token、Mapbox 失败或 Overpass 失败时仍会生成带清晰提示的演示海报。
+- 约 1600 × 2400 PNG，默认使用 Guidebook，也可显式选择 Modern。
+- 两个模板都按轨迹点的本地日期着色：同一天同色、不同天不重复；无有效时间时整条轨迹使用一种强调色。
+- Modern 保留深色信息面板和日期颜色图例。
+- Guidebook 使用大面积卫星/地貌地图、紧凑统计和海拔曲线；不显示日期颜色图例、分日行程、关键节点列表或图标图例。
+- Guidebook 的道路名称、山峰名称和可用海拔由 Mapbox Studio 样式中的 OSM 衍生地图数据直接渲染；不显示等高线和山峰图标，也不再调用 Overpass 搜索或额外绘制山峰。
+- Mapbox token 只由 API 读取。无 token 或 Mapbox 失败时仍会生成带清晰提示的演示影像底图海报。
 - 页面预览最终图片并下载 PNG。
 
 ### 照片轨迹海报
 
 - 支持 JPEG、PNG、WebP 静态照片；照片不上传服务器。
 - 轨迹形状和统计信息是两个独立图层，可分别拖动、锁定、隐藏和使用九宫格快速定位。
-- 轨迹可调整尺寸、旋转、颜色、线宽、透明度、描边与阴影。
-- 可任意组合总距离、累计爬升、总耗时（至少一项）；统计组可调整字号、颜色、尺寸、对齐、横竖布局、半透明背景与阴影。
+- 两个图层都按相同顺序提供 X、Y、整体缩放、旋转和透明度的滑块与数值输入；数值可精确输入并安全限制到有效范围。
+- 轨迹还可调整颜色、像素线宽、描边与阴影。
+- 可任意组合总距离、累计爬升、总耗时（至少一项）；每项都以“大号数值和单位在上、小号指标名称在下”的信息块显示。
+- 统计组还可调整像素字号、颜色、对齐、横竖布局、半透明背景和阴影；统计变换与透明度不会改变轨迹图层。
 - 高分辨率导出 PNG/JPEG；canvas 重新编码会移除原照片 EXIF。
 
 ## 快速开始
@@ -47,13 +52,19 @@ npm run dev
 ```dotenv
 MAPBOX_ACCESS_TOKEN=pk.your_token_here
 MAPBOX_STYLE=mapbox/outdoors-v12
+# 可选；留空时使用 mapbox/satellite-streets-v12
+MAPBOX_GUIDEBOOK_STYLE=your-mapbox-username/your-style-id
 ```
+
+`MAPBOX_STYLE` 用于 Modern，`MAPBOX_GUIDEBOOK_STYLE` 用于 Guidebook。Guidebook 自定义样式应保留卫星影像、道路名称以及纯文字的山峰名称/海拔，并关闭全部等高线、普通 POI、重复标签和山峰图标。完整的克隆步骤、文字表达式和发布检查清单见 [Mapbox Guidebook 样式说明](docs/mapbox-guidebook-style.md)。
+
+未设置 `MAPBOX_GUIDEBOOK_STYLE` 时直接使用 `mapbox/satellite-streets-v12`；已设置但样式无法访问时，也会回退到 Satellite Streets 并返回非阻断警告。默认样式可用于功能验证，但只有按文档制作的自定义样式才能保证道路与山峰标签的筛选和排版完全符合 Guidebook 约定。
+
+轨迹文件中的海拔只描述轨迹线自身，不能还原周边山体。Guidebook 的周边地貌来自地图样式中的卫星影像；道路与山峰文字来自地图样式，不代表“周边最高峰”排名。本 demo 不使用大模型生成或修改山峰、地貌、轨迹、数字和文字。
 
 不要把真实 token 放入 Git、前端 `VITE_` 变量或浏览器代码。网页只请求 Trailframe API；API 在服务端请求 Mapbox Static Images。生成图片保留 `© Mapbox © OpenStreetMap` 署名。Mapbox 的套餐、额度和许可可能变化，正式上线前请重新核对其当前条款。
 
 `.env` 必须位于仓库根目录（与根 `package.json` 同级）。API 会显式读取此文件；修改 token 后需要重启 `npm run dev`。
-
-`OVERPASS_URL` 默认使用公共 Overpass 实例。公共服务可能限流，生产环境建议增加缓存或使用自建实例。高峰数据署名为 OpenStreetMap contributors。
 
 ## 支持的轨迹数据
 
@@ -82,14 +93,16 @@ trailframe/
 ## API
 
 - `GET /health`：服务健康状态
-- `GET /api/config`：只返回地图是否配置、照片是否上传和高峰搜索半径，不返回 token
-- `POST /api/posters/terrain`：接收规范化 `TrackData`，返回 `image/png`
+- `GET /api/config`：只返回地图是否配置和照片是否上传，不返回 token 或山峰搜索元数据
+- `POST /api/posters/terrain`：接收规范化 `TrackData`，可在顶层附加 `template: "modern" | "guidebook"`，返回 `image/png`；省略模板时默认使用 Guidebook
 
 地形接口通过响应头返回非阻断警告：
 
 - `x-trailframe-warnings`
 - `x-trailframe-map-mode` (`mapbox` 或 `demo`)
-- `x-trailframe-peak-count`
+- `x-trailframe-template` (`modern` 或 `guidebook`)
+
+迁移提示：`peakRadiusKm` 配置字段、`x-trailframe-peak-count` 响应头和 `OVERPASS_URL` 环境变量已移除；依赖这些字段的调用方应直接删除相应逻辑。显式发送 `template: "modern"` 仍保持原模板选择能力。
 
 ## 验证
 
@@ -101,7 +114,7 @@ npm run build
 npm run check
 ```
 
-测试包括非敏感 GPX/KML fixtures、分段距离、海拔缺失、统计范围、投影简化、5 km 高峰筛选、API 降级合成尺寸、token 隔离、网页导入、编辑器状态、错误恢复和下载行为。开发阶段另用本地私有样例做过兼容验证，但它们不进入 Git。
+测试包括非敏感 GPX/KML fixtures、分段距离、海拔缺失、统计范围、投影简化、跨日非重复配色、模板默认值、Guidebook Satellite Streets 回退、单次地图请求、API 合成尺寸、token 隔离、网页导入、统一数值控件、统计旋转与独立透明度、错误恢复和 1600×2400 PNG/JPEG 下载行为。开发阶段另用本地私有样例做兼容验证，但它们不进入 Git。
 
 ## 后续方向
 

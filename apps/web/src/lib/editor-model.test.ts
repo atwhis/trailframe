@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { moveToGrid, toggleMetric, type LayerState } from "./editor-model.js";
+import { moveToGrid, parseNumericDraft, toggleMetric, type LayerState } from "./editor-model.js";
 
-const layer: LayerState = { x: 0.5, y: 0.5, scale: 1, rotation: 12, visible: true, locked: false };
+const layer: LayerState = { x: 0.5, y: 0.5, scale: 1, rotation: 12, opacity: 0.8, visible: true, locked: false };
 
 describe("photo editor model", () => {
   it("uses normalized coordinates for nine-grid positioning", () => {
@@ -13,5 +13,12 @@ describe("photo editor model", () => {
     expect(toggleMetric(["distance"], "distance")).toEqual(["distance"]);
     expect(toggleMetric(["distance", "duration"], "distance")).toEqual(["duration"]);
     expect(toggleMetric(["distance"], "ascent")).toEqual(["distance", "ascent"]);
+  });
+
+  it("clamps numeric drafts and recovers invalid values", () => {
+    expect(parseNumericDraft("120", 50, 4, 96)).toBe(96);
+    expect(parseNumericDraft("-10", 50, 4, 96)).toBe(4);
+    expect(parseNumericDraft("not-a-number", 50, 4, 96)).toBe(50);
+    expect(parseNumericDraft("", 50, 4, 96)).toBe(50);
   });
 });

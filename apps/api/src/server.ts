@@ -9,7 +9,7 @@ config({ path: fileURLToPath(new URL("../../../.env", import.meta.url)), quiet: 
 const app = await buildApp({
   mapboxToken: process.env.MAPBOX_ACCESS_TOKEN,
   mapboxStyle: process.env.MAPBOX_STYLE,
-  overpassUrl: process.env.OVERPASS_URL,
+  mapboxGuidebookStyle: process.env.MAPBOX_GUIDEBOOK_STYLE,
   webOrigin: process.env.WEB_ORIGIN,
 });
 

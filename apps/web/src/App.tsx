@@ -34,7 +34,7 @@ export default function App() {
 
         <div className="maker-area">
           <nav className="mode-tabs" aria-label="海报类型">
-            <button className={mode === "terrain" ? "active" : ""} onClick={() => setMode("terrain")}><span>⌁</span><div><b>地形轨迹海报</b><small>地图 · 高峰 · 海拔曲线</small></div></button>
+            <button className={mode === "terrain" ? "active" : ""} onClick={() => setMode("terrain")}><span>⌁</span><div><b>地形轨迹海报</b><small>地图 · 分日轨迹 · 海拔曲线</small></div></button>
             <button className={mode === "photo" ? "active" : ""} onClick={() => setMode("photo")}><span>▧</span><div><b>照片轨迹海报</b><small>照片 · 轨迹形状 · 自选统计</small></div></button>
           </nav>
           {track ? (mode === "terrain" ? <TerrainPoster track={track} /> : <Suspense fallback={<section className="empty-workspace"><h2>正在加载照片编辑器…</h2></section>}><PhotoPoster track={track} /></Suspense>) : <section className="empty-workspace">

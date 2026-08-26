@@ -3,6 +3,7 @@ export interface LayerState {
   y: number;
   scale: number;
   rotation: number;
+  opacity: number;
   visible: boolean;
   locked: boolean;
 }
@@ -30,4 +31,14 @@ export function toggleMetric(metrics: MetricKey[], metric: MetricKey): MetricKey
 
 export function clampUnit(value: number): number {
   return Math.max(0.04, Math.min(0.96, value));
+}
+
+export function clampValue(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
+
+export function parseNumericDraft(raw: string, lastValid: number, min: number, max: number): number {
+  if (raw.trim() === "") return lastValid;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? clampValue(parsed, min, max) : lastValid;
 }

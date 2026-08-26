@@ -23,3 +23,7 @@ export const trackDataSchema = z.object({
     durationMs: z.number().finite().nonnegative().nullable(),
   }),
 });
+
+export const terrainPosterRequestSchema = trackDataSchema.extend({
+  template: z.enum(["modern", "guidebook"]).optional().default("guidebook"),
+});

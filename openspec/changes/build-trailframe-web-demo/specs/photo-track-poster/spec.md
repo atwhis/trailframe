@@ -34,11 +34,23 @@
 - **THEN** 预览和导出结果同步反映该样式，且只显示轨迹形状
 
 ### Requirement: Select and style basic statistics
-系统 SHALL 允许用户任意组合总距离、累计爬升和总耗时，至少选择一项，并将所选统计作为一个可调整字体、颜色、对齐、横竖布局、背景与阴影的整体图层。
+系统 SHALL 允许用户任意组合总距离、累计爬升和总耗时，至少选择一项；每项统计 SHALL 作为“第一行大号数值和单位、第二行小号指标名称”的独立信息块显示，所选信息块 SHALL 组成一个可调整字体、颜色、对齐、横竖布局、背景、阴影及 0%–100% 整体透明度的统计图层。统计透明度 SHALL 独立于轨迹图层透明度，且各统计信息块不得分别拖动。
 
 #### Scenario: Select a subset of metrics
 - **WHEN** 用户只选择总距离和总耗时
 - **THEN** 预览与导出仅显示总距离和总耗时，不显示累计爬升
+
+#### Scenario: Use hierarchical vertical statistics
+- **WHEN** 用户选择多个统计项并使用纵向布局
+- **THEN** 各统计信息块纵向排列，且每块分别在第一行显示数值和单位、第二行显示指标名称
+
+#### Scenario: Use hierarchical horizontal statistics
+- **WHEN** 用户选择多个统计项并使用横向布局
+- **THEN** 各统计信息块横向排列，且每块内部仍在第一行显示数值和单位、第二行显示指标名称
+
+#### Scenario: Adjust statistics opacity independently
+- **WHEN** 用户将统计图层整体透明度设置为 60%
+- **THEN** 统计数值、名称、背景和阴影在预览及导出中均使用 60% 整体透明度，且轨迹图层透明度保持不变
 
 #### Scenario: Deselect all metrics
 - **WHEN** 用户尝试取消最后一项统计
